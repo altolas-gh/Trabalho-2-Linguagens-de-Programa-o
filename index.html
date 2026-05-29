@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberSec Brasil — Projeto G2</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #030712;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      padding: 80px 20px 60px;
+      text-align: center;
+      border-bottom: 1px solid #1e3a5f;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(37,99,235,.25), transparent);
+    }
+    .hero-icon { font-size: 5rem; margin-bottom: 16px; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; color: #f8fafc; position: relative; }
+    .hero h1 span { color: #60a5fa; }
+    .hero p  { font-size: 1.1rem; color: #94a3b8; margin: 14px auto 0; max-width: 600px; position: relative; }
+    .badge {
+      display: inline-block; margin-top: 12px; padding: 4px 14px;
+      background: rgba(37,99,235,.2); border: 1px solid #2563eb;
+      border-radius: 999px; font-size: .8rem; color: #93c5fd; position: relative;
+    }
+
+    /* ── CTA BUTTONS ── */
+    .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 36px; position: relative; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      font-size: .95rem; font-weight: 600; text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-secondary { background: transparent; border: 2px solid #2563eb; color: #93c5fd; }
+    .btn-github { background: #1f2937; color: #e2e8f0; border: 1px solid #374151; }
+
+    /* ── SECTION ── */
+    .section { padding: 64px 20px; max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-size: 1.6rem; font-weight: 700; color: #f8fafc;
+      border-left: 4px solid #2563eb; padding-left: 16px; margin-bottom: 36px;
+    }
+
+    /* ── KPI GRID ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+    .kpi-card {
+      background: linear-gradient(135deg, #1e3a5f, #0d2137);
+      border: 1px solid #2563eb; border-radius: 14px;
+      padding: 24px 16px; text-align: center;
+    }
+    .kpi-icon  { font-size: 2rem; margin-bottom: 8px; }
+    .kpi-value { font-size: 1.8rem; font-weight: 800; color: #60a5fa; }
+    .kpi-label { font-size: .78rem; color: #94a3b8; margin-top: 4px; }
+
+    /* ── FEATURES ── */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: #0f172a; border: 1px solid #1e3a5f;
+      border-radius: 14px; padding: 24px;
+      transition: border-color .2s;
+    }
+    .feature-card:hover { border-color: #2563eb; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+    .feature-card p  { font-size: .87rem; color: #94a3b8; line-height: 1.6; }
+    .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+
+    /* ── TECH STACK ── */
+    .tech-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tech-tag {
+      background: #1e3a5f; border: 1px solid #2563eb;
+      border-radius: 8px; padding: 6px 16px;
+      font-size: .85rem; color: #93c5fd; font-weight: 600;
+    }
+
+    /* ── SEPARATOR ── */
+    .sep { border: none; border-top: 1px solid #1e3a5f; margin: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 20px;
+      color: #475569; font-size: .82rem;
+      border-top: 1px solid #1e3a5f;
+    }
+    footer a { color: #60a5fa; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-icon">🛡️</div>
+  <h1>CyberSec <span>Brasil</span></h1>
+  <p>Dashboard de análise de ataques cibernéticos e incidentes de segurança digital no Brasil — 2015 a 2024.</p>
+  <span class="badge">Projeto G2 · Tema 26 · Análise de Segurança Cibernética</span>
+  <div class="cta-group">
+    <a href="https://seu-usuario-projeto-ciberseguranca.streamlit.app" class="btn btn-primary">
+      📊 Acessar Dashboard
+    </a>
+    <a href="notebooks/analise_ciberseguranca.ipynb" class="btn btn-secondary" download>
+      📓 Notebook
+    </a>
+    <a href="https://github.com/seu-usuario/projeto-ciberseguranca" class="btn btn-github">
+      🐙 GitHub
+    </a>
+  </div>
+</section>
+
+<!-- KPIs -->
+<section class="section">
+  <h2 class="section-title">📈 Visão Geral dos Dados</h2>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-value">4.440</div>
+      <div class="kpi-label">Registros no Dataset</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📅</div>
+      <div class="kpi-value">10 anos</div>
+      <div class="kpi-label">Período Analisado</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">⚔️</div>
+      <div class="kpi-value">5 tipos</div>
+      <div class="kpi-label">Tipos de Ataque</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🏢</div>
+      <div class="kpi-value">5 setores</div>
+      <div class="kpi-label">Setores Analisados</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🗺️</div>
+      <div class="kpi-value">5 regiões</div>
+      <div class="kpi-label">Regiões do Brasil</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📍</div>
+      <div class="kpi-value">20 UFs</div>
+      <div class="kpi-label">Estados Cobertos</div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- FEATURES -->
+<section class="section">
+  <h2 class="section-title">🔧 Funcionalidades do Dashboard</h2>
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Evolução Temporal</h3>
+      <p>Gráfico de linha interativo mostrando a progressão de cada tipo de ataque ao longo dos anos, com identificação de tendências e períodos críticos.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔥</div>
+      <h3>Heatmap Mensal</h3>
+      <p>Mapa de calor Mês × Ano que revela a sazonalidade dos incidentes e permite identificar janelas de maior exposição.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💠</div>
+      <h3>Análise de Correlação</h3>
+      <p>Gráfico de dispersão com tamanho proporcional aos sistemas afetados, revelando a relação entre volume de incidentes e impacto financeiro.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <h3>Comparação Regional</h3>
+      <p>Análise por região e top 10 estados com maior concentração de ataques, cruzando incidentes com prejuízo financeiro.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎛️</div>
+      <h3>Filtros Interativos</h3>
+      <p>Filtros por Ano, Mês, Região, UF, Setor, Tipo de Ataque e Criticidade — todos os gráficos e KPIs atualizam em tempo real.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Tabela Dinâmica</h3>
+      <p>Exploração detalhada com agrupamento configurável por qualquer dimensão e métricas de total, média e máximo.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- TECH STACK -->
+<section class="section">
+  <h2 class="section-title">🛠️ Tecnologias</h2>
+  <div class="tech-list">
+    <span class="tech-tag">🐍 Python</span>
+    <span class="tech-tag">🐼 Pandas</span>
+    <span class="tech-tag">📊 Plotly</span>
+    <span class="tech-tag">🚀 Streamlit</span>
+    <span class="tech-tag">🗄️ SQLAlchemy</span>
+    <span class="tech-tag">🔢 NumPy</span>
+    <span class="tech-tag">🐙 GitHub</span>
+    <span class="tech-tag">☁️ Streamlit Cloud</span>
+  </div>
+</section>
+
+<footer>
+  <p>Desenvolvido para <strong>Projeto G2 · Tema 26</strong> — Dados simulados para fins acadêmicos.</p>
+  <p style="margin-top:6px">
+    <a href="https://github.com/seu-usuario/projeto-ciberseguranca">GitHub</a> ·
+    <a href="https://seu-usuario-projeto-ciberseguranca.streamlit.app">Dashboard</a>
+  </p>
+</footer>
+
+</body>
+</html>
