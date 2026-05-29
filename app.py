@@ -107,7 +107,7 @@ df = df_full[
 ]
 
 # ─── Cabeçalho ───────────────────────────────────────────────────────────────
-st.markdown("# 🛡️ Dashboard de Segurança Cibernética — Brasil")
+st.markdown("# Dashboard de Segurança Cibernética — Brasil")
 st.markdown("**Análise de ataques digitais e incidentes de segurança (2015–2024)**  |  Projeto G2 · Tema 26")
 st.markdown("---")
 
@@ -364,7 +364,7 @@ with col_tab2:
 st.markdown("---")
 
 # ─── Conclusão executiva ──────────────────────────────────────────────────────
-st.markdown('<div class="section-title">📝 Conclusão Executiva</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title"> Conclusão </div>', unsafe_allow_html=True)
 
 top3_ataques = df.groupby("tipo_ataque")["incidentes"].sum().sort_values(ascending=False).head(3).index.tolist()
 top_vuln     = df.groupby("vulnerabilidade")["incidentes"].sum().idxmax()
