@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 
 # ─── Configuração da página ───────────────────────────────────────────────────
 st.set_page_config(
@@ -18,35 +18,131 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ─── Estilo customizado ───────────────────────────────────────────────────────
-st.markdown("""
+# ─── Estado do tema ───────────────────────────────────────────────────────────
+if "dark_mode" not in st.session_state:
+    st.session_state.dark_mode = True
+
+# ─── Paletas de cores por tema ────────────────────────────────────────────────
+def get_theme():
+    if st.session_state.dark_mode:
+        return {
+            "plotly_template": "plotly_dark",
+            "plot_bg": "rgba(15,23,42,1)",
+            "paper_bg": "rgba(0,0,0,0)",
+            # CSS
+            "page_bg": "#030712",
+            "sidebar_bg": "#0f172a",
+            "text_color": "#e2e8f0",
+            "subtext_color": "#94a3b8",
+            "card_bg": "linear-gradient(135deg, #1e3a5f, #0d2137)",
+            "card_border": "#2563eb",
+            "card_value": "#60a5fa",
+            "section_title_color": "#60a5fa",
+            "section_border": "#2563eb",
+            "insight_bg": "#0f172a",
+            "insight_text": "#cbd5e1",
+            "hr_color": "#1e3a5f",
+            "toggle_bg": "#1e3a5f",
+            "toggle_border": "#2563eb",
+            "toggle_text": "#93c5fd",
+            "label": "☀️ Modo Claro",
+        }
+    else:
+        return {
+            "plotly_template": "plotly_white",
+            "plot_bg": "rgba(248,250,252,1)",
+            "paper_bg": "rgba(0,0,0,0)",
+            # CSS
+            "page_bg": "#f1f5f9",
+            "sidebar_bg": "#ffffff",
+            "text_color": "#0f172a",
+            "subtext_color": "#475569",
+            "card_bg": "linear-gradient(135deg, #dbeafe, #eff6ff)",
+            "card_border": "#3b82f6",
+            "card_value": "#1d4ed8",
+            "section_title_color": "#1d4ed8",
+            "section_border": "#3b82f6",
+            "insight_bg": "#eff6ff",
+            "insight_text": "#1e3a5f",
+            "hr_color": "#cbd5e1",
+            "toggle_bg": "#dbeafe",
+            "toggle_border": "#3b82f6",
+            "toggle_text": "#1d4ed8",
+            "label": "🌙 Modo Escuro",
+        }
+
+T = get_theme()
+
+# ─── CSS dinâmico ─────────────────────────────────────────────────────────────
+st.markdown(f"""
 <style>
-    .metric-card {
-        background: linear-gradient(135deg, #1e3a5f, #0d2137);
-        border: 1px solid #2563eb;
+    /* Fundo geral */
+    .stApp {{ background-color: {T['page_bg']}; }}
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {{
+        background-color: {T['sidebar_bg']} !important;
+    }}
+    [data-testid="stSidebar"] * {{ color: {T['text_color']} !important; }}
+
+    /* Textos gerais */
+    .stMarkdown, .stText, p, span, label {{
+        color: {T['text_color']};
+    }}
+
+    /* KPI cards */
+    .metric-card {{
+        background: {T['card_bg']};
+        border: 1px solid {T['card_border']};
         border-radius: 12px;
         padding: 16px 20px;
         text-align: center;
-        color: white;
-    }
-    .metric-value { font-size: 2rem; font-weight: 700; color: #60a5fa; }
-    .metric-label { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
-    .metric-sub   { font-size: 0.9rem; color: #f97316; font-weight: 600; }
-    h1, h2, h3 { color: #e2e8f0; }
-    .section-title {
+        color: {T['text_color']};
+    }}
+    .metric-value {{ font-size: 2rem; font-weight: 700; color: {T['card_value']}; }}
+    .metric-label {{ font-size: 0.85rem; color: {T['subtext_color']}; margin-top: 4px; }}
+    .metric-sub   {{ font-size: 0.9rem; color: #f97316; font-weight: 600; }}
+
+    /* Títulos de seção */
+    .section-title {{
         font-size: 1.1rem; font-weight: 700;
-        color: #60a5fa; border-left: 4px solid #2563eb;
+        color: {T['section_title_color']};
+        border-left: 4px solid {T['section_border']};
         padding-left: 10px; margin-bottom: 12px;
-    }
-    .insight-box {
-        background-color: #0f172a;
+    }}
+
+    /* Caixas de insight */
+    .insight-box {{
+        background-color: {T['insight_bg']};
         border-left: 4px solid #f97316;
         border-radius: 6px;
         padding: 14px 18px;
-        color: #cbd5e1;
+        color: {T['insight_text']};
         font-size: 0.9rem;
         line-height: 1.6;
-    }
+    }}
+
+    /* Separadores */
+    hr {{ border-color: {T['hr_color']} !important; }}
+
+    /* Botão toggle */
+    .toggle-btn {{
+        display: inline-block;
+        background: {T['toggle_bg']};
+        border: 1.5px solid {T['toggle_border']};
+        color: {T['toggle_text']};
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+    }}
+
+    /* Títulos h1/h2/h3 */
+    h1, h2, h3 {{ color: {T['text_color']} !important; }}
+
+    /* Tabela */
+    [data-testid="stDataFrame"] {{ background: {T['insight_bg']}; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -56,14 +152,13 @@ def load_data():
     df = pd.read_csv("dados/simulacao_ciberseguranca_brasil.csv", parse_dates=["data"])
     df["ano"] = df["ano"].astype(int)
     df["mes"] = df["mes"].astype(int)
-    # SQLite em memória (compatível com Streamlit Cloud)
     engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
     df.to_sql("incidentes", engine, if_exists="replace", index=False)
     return df
 
 df_full = load_data()
 
-# ─── Sidebar — Filtros ────────────────────────────────────────────────────────
+# ─── Sidebar — Filtros + Toggle ───────────────────────────────────────────────
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/shield.png", width=60)
     st.title("🔎 Filtros")
@@ -93,6 +188,12 @@ with st.sidebar:
     crit_sel = st.multiselect("🚨 Nível de Criticidade", criticidades, default=criticidades)
 
     st.markdown("---")
+
+    # ── Botão de tema ──
+    if st.button(T["label"], key="theme_toggle", use_container_width=True):
+        st.session_state.dark_mode = not st.session_state.dark_mode
+        st.rerun()
+
     st.caption("Projeto G2 · Tema 26 · CyberSec Brasil")
 
 # ─── Aplicar filtros ──────────────────────────────────────────────────────────
@@ -116,12 +217,12 @@ if df.empty:
     st.stop()
 
 # ─── KPIs ─────────────────────────────────────────────────────────────────────
-total_incidentes   = int(df["incidentes"].sum())
-impacto_total      = df["impacto_financeiro"].sum()
-tempo_medio        = df["tempo_recuperacao"].mean()
-ataque_principal   = df.groupby("tipo_ataque")["incidentes"].sum().idxmax()
-setor_principal    = df.groupby("setor")["incidentes"].sum().idxmax()
-regiao_critica     = df.groupby("regiao")["incidentes"].sum().idxmax()
+total_incidentes = int(df["incidentes"].sum())
+impacto_total    = df["impacto_financeiro"].sum()
+tempo_medio      = df["tempo_recuperacao"].mean()
+ataque_principal = df.groupby("tipo_ataque")["incidentes"].sum().idxmax()
+setor_principal  = df.groupby("setor")["incidentes"].sum().idxmax()
+regiao_critica   = df.groupby("regiao")["incidentes"].sum().idxmax()
 
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
@@ -134,14 +235,24 @@ def kpi_card(col, icon, label, value, sub=""):
         {'<div class="metric-sub">' + sub + '</div>' if sub else ''}
     </div>""", unsafe_allow_html=True)
 
-kpi_card(col1, "📊", "Total de Incidentes", f"{total_incidentes:,}".replace(",", "."))
-kpi_card(col2, "💸", "Impacto Financeiro", f"R$ {impacto_total/1e9:.2f}B")
+kpi_card(col1, "📊", "Total de Incidentes",   f"{total_incidentes:,}".replace(",", "."))
+kpi_card(col2, "💸", "Impacto Financeiro",    f"R$ {impacto_total/1e9:.2f}B")
 kpi_card(col3, "⏱️", "Tempo Médio Recuperação", f"{tempo_medio:.1f}h")
-kpi_card(col4, "⚔️", "Ataque Predominante", ataque_principal)
-kpi_card(col5, "🏢", "Setor Mais Afetado", setor_principal)
-kpi_card(col6, "🗺️", "Região Crítica", regiao_critica)
+kpi_card(col4, "⚔️", "Ataque Predominante",  ataque_principal)
+kpi_card(col5, "🏢", "Setor Mais Afetado",   setor_principal)
+kpi_card(col6, "🗺️", "Região Crítica",        regiao_critica)
 
 st.markdown("<br>", unsafe_allow_html=True)
+
+# ─── Helper: layout padrão de figura ─────────────────────────────────────────
+def fig_layout(fig, **kwargs):
+    fig.update_layout(
+        template=T["plotly_template"],
+        paper_bgcolor=T["paper_bg"],
+        plot_bgcolor=T["plot_bg"],
+        **kwargs
+    )
+    return fig
 
 # ─── Linha temporal ──────────────────────────────────────────────────────────
 st.markdown('<div class="section-title">📈 Evolução Temporal dos Incidentes</div>', unsafe_allow_html=True)
@@ -151,12 +262,11 @@ with col_t1:
     df_tempo = df.groupby(["ano", "tipo_ataque"])["incidentes"].sum().reset_index()
     fig_linha = px.line(
         df_tempo, x="ano", y="incidentes", color="tipo_ataque",
-        markers=True, template="plotly_dark",
+        markers=True, template=T["plotly_template"],
         labels={"ano": "Ano", "incidentes": "Incidentes", "tipo_ataque": "Tipo de Ataque"},
         title="Incidentes por Tipo de Ataque ao Longo dos Anos"
     )
-    fig_linha.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
+    fig_layout(fig_linha,
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
         xaxis=dict(dtick=1)
     )
@@ -187,12 +297,11 @@ with col_b1:
     df_atk = df.groupby("tipo_ataque")["incidentes"].sum().sort_values(ascending=True).reset_index()
     fig_atk = px.bar(
         df_atk, x="incidentes", y="tipo_ataque", orientation="h",
-        template="plotly_dark", color="incidentes",
+        template=T["plotly_template"], color="incidentes",
         color_continuous_scale="Blues",
         labels={"incidentes": "Total de Incidentes", "tipo_ataque": "Tipo de Ataque"}
     )
-    fig_atk.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
-                           coloraxis_showscale=False)
+    fig_layout(fig_atk, coloraxis_showscale=False)
     st.plotly_chart(fig_atk, use_container_width=True)
 
 with col_b2:
@@ -200,12 +309,11 @@ with col_b2:
     df_set = df.groupby("setor")["incidentes"].sum().sort_values(ascending=True).reset_index()
     fig_set = px.bar(
         df_set, x="incidentes", y="setor", orientation="h",
-        template="plotly_dark", color="incidentes",
+        template=T["plotly_template"], color="incidentes",
         color_continuous_scale="Oranges",
         labels={"incidentes": "Total de Incidentes", "setor": "Setor"}
     )
-    fig_set.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
-                           coloraxis_showscale=False)
+    fig_layout(fig_set, coloraxis_showscale=False)
     st.plotly_chart(fig_set, use_container_width=True)
 
 st.markdown("---")
@@ -213,7 +321,7 @@ st.markdown("---")
 # ─── Heatmap mensal ──────────────────────────────────────────────────────────
 st.markdown('<div class="section-title">🔥 Heatmap de Incidentes — Mês × Ano</div>', unsafe_allow_html=True)
 
-df_heat = df.groupby(["ano", "mes"])["incidentes"].sum().reset_index()
+df_heat  = df.groupby(["ano", "mes"])["incidentes"].sum().reset_index()
 df_pivot = df_heat.pivot(index="mes", columns="ano", values="incidentes").fillna(0)
 
 fig_heat = go.Figure(data=go.Heatmap(
@@ -225,13 +333,7 @@ fig_heat = go.Figure(data=go.Heatmap(
     texttemplate="%{text}",
     showscale=True
 ))
-fig_heat.update_layout(
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(15,23,42,1)",
-    xaxis_title="Ano", yaxis_title="Mês",
-    height=380
-)
+fig_layout(fig_heat, xaxis_title="Ano", yaxis_title="Mês", height=380)
 st.plotly_chart(fig_heat, use_container_width=True)
 
 st.markdown("""
@@ -255,11 +357,11 @@ with col_d1:
     fig_disp = px.scatter(
         df_disp, x="incidentes", y="impacto", color="setor",
         size="sistemas", hover_name="tipo_ataque",
-        template="plotly_dark",
+        template=T["plotly_template"],
         labels={"incidentes": "Total Incidentes", "impacto": "Impacto Financeiro (R$)", "setor": "Setor"},
         title="Correlação: Volume de Incidentes vs Prejuízo Financeiro"
     )
-    fig_disp.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)")
+    fig_layout(fig_disp)
     st.plotly_chart(fig_disp, use_container_width=True)
 
 with col_d2:
@@ -267,11 +369,10 @@ with col_d2:
     df_vuln = df.groupby("vulnerabilidade")["incidentes"].sum().sort_values(ascending=False).reset_index()
     fig_vuln = px.pie(
         df_vuln, names="vulnerabilidade", values="incidentes",
-        template="plotly_dark", hole=0.45,
+        template=T["plotly_template"], hole=0.45,
         color_discrete_sequence=px.colors.sequential.Blues_r
     )
-    fig_vuln.update_layout(paper_bgcolor="rgba(0,0,0,0)", showlegend=True,
-                            legend=dict(font=dict(size=11)))
+    fig_layout(fig_vuln, showlegend=True, legend=dict(font=dict(size=11)))
     st.plotly_chart(fig_vuln, use_container_width=True)
 
 st.markdown("---")
@@ -288,23 +389,22 @@ with col_r1:
     fig_reg = px.bar(
         df_reg.sort_values("incidentes", ascending=False),
         x="regiao", y="incidentes", color="impacto",
-        template="plotly_dark", color_continuous_scale="Reds",
+        template=T["plotly_template"], color_continuous_scale="Reds",
         labels={"regiao":"Região","incidentes":"Incidentes","impacto":"Impacto (R$)"},
         title="Incidentes e Impacto por Região"
     )
-    fig_reg.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)")
+    fig_layout(fig_reg)
     st.plotly_chart(fig_reg, use_container_width=True)
 
 with col_r2:
     df_uf = df.groupby("uf")["incidentes"].sum().sort_values(ascending=False).head(10).reset_index()
     fig_uf = px.bar(
         df_uf, x="incidentes", y="uf", orientation="h",
-        template="plotly_dark", color="incidentes", color_continuous_scale="Teal",
+        template=T["plotly_template"], color="incidentes", color_continuous_scale="Teal",
         labels={"uf":"Estado","incidentes":"Incidentes"},
         title="Top 10 Estados com Mais Incidentes"
     )
-    fig_uf.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
-                          coloraxis_showscale=False)
+    fig_layout(fig_uf, coloraxis_showscale=False)
     st.plotly_chart(fig_uf, use_container_width=True)
 
 st.markdown("---")
@@ -320,25 +420,23 @@ with col_rec1:
     df_crit = df_crit.sort_values("nivel_criticidade")
     fig_crit = px.bar(
         df_crit, x="nivel_criticidade", y="tempo_recuperacao",
-        color="nivel_criticidade", template="plotly_dark",
+        color="nivel_criticidade", template=T["plotly_template"],
         color_discrete_map={"Baixo":"#22c55e","Médio":"#eab308","Alto":"#f97316","Crítico":"#ef4444"},
         labels={"nivel_criticidade":"Criticidade","tempo_recuperacao":"Tempo Médio (h)"},
         title="Tempo Médio de Recuperação por Nível de Criticidade"
     )
-    fig_crit.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
-                            showlegend=False)
+    fig_layout(fig_crit, showlegend=False)
     st.plotly_chart(fig_crit, use_container_width=True)
 
 with col_rec2:
     df_rec = df.groupby("setor")["tempo_recuperacao"].mean().sort_values(ascending=False).reset_index()
     fig_rec = px.bar(
         df_rec, x="setor", y="tempo_recuperacao",
-        template="plotly_dark", color="tempo_recuperacao", color_continuous_scale="Purples",
+        template=T["plotly_template"], color="tempo_recuperacao", color_continuous_scale="Purples",
         labels={"setor":"Setor","tempo_recuperacao":"Tempo Médio (h)"},
         title="Tempo Médio de Recuperação por Setor"
     )
-    fig_rec.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,1)",
-                           coloraxis_showscale=False)
+    fig_layout(fig_rec, coloraxis_showscale=False)
     st.plotly_chart(fig_rec, use_container_width=True)
 
 st.markdown("---")
@@ -374,7 +472,7 @@ st.markdown(f"""
 <div class="insight-box" style="border-left-color:#60a5fa; font-size:0.95rem; line-height:1.8">
 <b>🛡️ Análise de Segurança Cibernética — Brasil ({min(ano_sel)}–{max(ano_sel)})</b><br><br>
 
-O período analisado registrou <b style="color:#60a5fa">{total_incidentes:,} incidentes</b> de segurança digital,
+O período analisado registrou <b style="color:#2563eb">{total_incidentes:,} incidentes</b> de segurança digital,
 com impacto financeiro estimado em <b style="color:#f97316">R$ {impacto_total/1e6:.1f} milhões</b>
 e tempo médio de recuperação de <b>{tempo_medio:.1f} horas</b>.<br><br>
 
