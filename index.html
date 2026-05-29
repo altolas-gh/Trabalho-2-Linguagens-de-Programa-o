@@ -1,107 +1,199 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head> 
+<html lang="pt-BR" data-theme="dark">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CyberSec Brasil — Projeto G2</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── VARIÁVEIS DE TEMA ── */
+    :root[data-theme="dark"] {
+      --page-bg:       #030712;
+      --hero-from:     #0f172a;
+      --hero-mid:      #1e3a5f;
+      --text-primary:  #f8fafc;
+      --text-muted:    #94a3b8;
+      --card-bg:       linear-gradient(135deg, #1e3a5f, #0d2137);
+      --card-border:   #2563eb;
+      --card-value:    #60a5fa;
+      --card-label:    #94a3b8;
+      --feature-bg:    #0f172a;
+      --feature-bdr:   #1e3a5f;
+      --feature-hover: #2563eb;
+      --feature-title: #f8fafc;
+      --feature-text:  #94a3b8;
+      --tech-bg:       #1e3a5f;
+      --tech-border:   #2563eb;
+      --tech-text:     #93c5fd;
+      --sep-color:     #1e3a5f;
+      --footer-text:   #475569;
+      --footer-link:   #60a5fa;
+      --toggle-bg:     #1e3a5f;
+      --toggle-bdr:    #2563eb;
+      --toggle-txt:    #93c5fd;
+      --toggle-icon:   "☀️";
+    }
+    :root[data-theme="light"] {
+      --page-bg:       #f1f5f9;
+      --hero-from:     #dbeafe;
+      --hero-mid:      #bfdbfe;
+      --text-primary:  #0f172a;
+      --text-muted:    #475569;
+      --card-bg:       linear-gradient(135deg, #dbeafe, #eff6ff);
+      --card-border:   #3b82f6;
+      --card-value:    #1d4ed8;
+      --card-label:    #475569;
+      --feature-bg:    #ffffff;
+      --feature-bdr:   #cbd5e1;
+      --feature-hover: #3b82f6;
+      --feature-title: #0f172a;
+      --feature-text:  #475569;
+      --tech-bg:       #dbeafe;
+      --tech-border:   #3b82f6;
+      --tech-text:     #1d4ed8;
+      --sep-color:     #cbd5e1;
+      --footer-text:   #64748b;
+      --footer-link:   #2563eb;
+      --toggle-bg:     #dbeafe;
+      --toggle-bdr:    #3b82f6;
+      --toggle-txt:    #1d4ed8;
+      --toggle-icon:   "🌙";
+    }
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #030712;
-      color: #e2e8f0;
+      background: var(--page-bg);
+      color: var(--text-primary);
       min-height: 100vh;
+      transition: background .3s, color .3s;
     }
+
+    /* ── TOGGLE FLUTUANTE ── */
+    .theme-toggle {
+      position: fixed; top: 18px; right: 20px; z-index: 999;
+      background: var(--toggle-bg);
+      border: 1.5px solid var(--toggle-bdr);
+      color: var(--toggle-txt);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: .85rem; font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .15s;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-mid) 50%, var(--hero-from) 100%);
       padding: 80px 20px 60px;
       text-align: center;
-      border-bottom: 1px solid #1e3a5f;
-      position: relative;
-      overflow: hidden;
+      border-bottom: 1px solid var(--sep-color);
+      position: relative; overflow: hidden;
+      transition: background .3s;
     }
     .hero::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(37,99,235,.25), transparent);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(37,99,235,.2), transparent);
     }
     .hero-icon { font-size: 5rem; margin-bottom: 16px; }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; color: #f8fafc; position: relative; }
-    .hero h1 span { color: #60a5fa; }
-    .hero p  { font-size: 1.1rem; color: #94a3b8; margin: 14px auto 0; max-width: 600px; position: relative; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800;
+      color: var(--text-primary); position: relative;
+    }
+    .hero h1 span { color: var(--card-value); }
+    .hero p {
+      font-size: 1.1rem; color: var(--text-muted);
+      margin: 14px auto 0; max-width: 600px; position: relative;
+    }
     .badge {
       display: inline-block; margin-top: 12px; padding: 4px 14px;
-      background: rgba(37,99,235,.2); border: 1px solid #2563eb;
-      border-radius: 999px; font-size: .8rem; color: #93c5fd; position: relative;
+      background: rgba(37,99,235,.15); border: 1px solid var(--card-border);
+      border-radius: 999px; font-size: .8rem; color: var(--tech-text); position: relative;
     }
 
-    /* ── CTA BUTTONS ── */
-    .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 36px; position: relative; }
+    /* ── BOTÕES — todos iguais ao estilo "secondary" ── */
+    .cta-group {
+      display: flex; gap: 14px; justify-content: center;
+      flex-wrap: wrap; margin-top: 36px; position: relative;
+    }
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 14px 28px; border-radius: 10px;
       font-size: .95rem; font-weight: 600; text-decoration: none;
-      transition: transform .15s, box-shadow .15s;
+      background: transparent;
+      border: 2px solid var(--card-border);
+      color: var(--tech-text);
+      transition: transform .15s, box-shadow .15s, background .2s;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.4); }
-    .btn-primary { background: #2563eb; color: #fff; }
-    .btn-secondary { background: transparent; border: 2px solid #2563eb; color: #93c5fd; }
-    .btn-github { background: #1f2937; color: #e2e8f0; border: 1px solid #374151; }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37,99,235,.25);
+      background: rgba(37,99,235,.1);
+    }
 
-    /* ── SECTION ── */
+    /* ── SECTIONS ── */
     .section { padding: 64px 20px; max-width: 1100px; margin: 0 auto; }
     .section-title {
-      font-size: 1.6rem; font-weight: 700; color: #f8fafc;
-      border-left: 4px solid #2563eb; padding-left: 16px; margin-bottom: 36px;
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--text-primary);
+      border-left: 4px solid var(--card-border);
+      padding-left: 16px; margin-bottom: 36px;
     }
 
     /* ── KPI GRID ── */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
     .kpi-card {
-      background: linear-gradient(135deg, #1e3a5f, #0d2137);
-      border: 1px solid #2563eb; border-radius: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: 14px;
       padding: 24px 16px; text-align: center;
+      transition: background .3s;
     }
     .kpi-icon  { font-size: 2rem; margin-bottom: 8px; }
-    .kpi-value { font-size: 1.8rem; font-weight: 800; color: #60a5fa; }
-    .kpi-label { font-size: .78rem; color: #94a3b8; margin-top: 4px; }
+    .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--card-value); }
+    .kpi-label { font-size: .78rem; color: var(--card-label); margin-top: 4px; }
 
     /* ── FEATURES ── */
     .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
     .feature-card {
-      background: #0f172a; border: 1px solid #1e3a5f;
+      background: var(--feature-bg); border: 1px solid var(--feature-bdr);
       border-radius: 14px; padding: 24px;
-      transition: border-color .2s;
+      transition: border-color .2s, background .3s;
     }
-    .feature-card:hover { border-color: #2563eb; }
-    .feature-card h3 { font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
-    .feature-card p  { font-size: .87rem; color: #94a3b8; line-height: 1.6; }
+    .feature-card:hover { border-color: var(--feature-hover); }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; color: var(--feature-title); margin-bottom: 8px; }
+    .feature-card p  { font-size: .87rem; color: var(--feature-text); line-height: 1.6; }
     .feature-icon { font-size: 2rem; margin-bottom: 12px; }
 
     /* ── TECH STACK ── */
     .tech-list { display: flex; flex-wrap: wrap; gap: 10px; }
     .tech-tag {
-      background: #1e3a5f; border: 1px solid #2563eb;
+      background: var(--tech-bg); border: 1px solid var(--tech-border);
       border-radius: 8px; padding: 6px 16px;
-      font-size: .85rem; color: #93c5fd; font-weight: 600;
+      font-size: .85rem; color: var(--tech-text); font-weight: 600;
+      transition: background .3s;
     }
 
-    /* ── SEPARATOR ── */
-    .sep { border: none; border-top: 1px solid #1e3a5f; margin: 0; }
-
-    /* ── FOOTER ── */
+    /* ── SEPARATOR / FOOTER ── */
+    .sep { border: none; border-top: 1px solid var(--sep-color); margin: 0; }
     footer {
       text-align: center; padding: 32px 20px;
-      color: #475569; font-size: .82rem;
-      border-top: 1px solid #1e3a5f;
+      color: var(--footer-text); font-size: .82rem;
+      border-top: 1px solid var(--sep-color);
     }
-    footer a { color: #60a5fa; text-decoration: none; }
+    footer a { color: var(--footer-link); text-decoration: none; }
   </style>
 </head>
 <body>
+
+<!-- BOTÃO DE TEMA FLUTUANTE -->
+<button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+  <span id="themeIcon">☀️</span>
+  <span id="themeLabel">Modo Claro</span>
+</button>
 
 <!-- HERO -->
 <section class="hero">
@@ -110,21 +202,21 @@
   <p>Dashboard de análise de ataques cibernéticos e incidentes de segurança digital no Brasil — 2015 a 2024.</p>
   <span class="badge">Projeto G2 · Tema 26 · Análise de Segurança Cibernética</span>
   <div class="cta-group">
-    <a href="https://trabalho-2-linguagens-de-programa-o-2qetukzgsg67wmtvvucta4.streamlit.app/" class="btn btn-primary">
-       Acessar Dashboard
+    <a href="https://trabalho-2-linguagens-de-programa-o-2qetukzgsg67wmtvvucta4.streamlit.app/" class="btn">
+      📊 Acessar Dashboard
     </a>
-    <a href="notebooks/analise_ciberseguranca.ipynb" class="btn btn-secondary" download>
-       Notebook
+    <a href="notebooks/analise_ciberseguranca.ipynb" class="btn" download>
+      📓 Notebook
     </a>
-    <a href="https://github.com/altolas-gh/Trabalho-2-Linguagens-de-Programa-o" class="btn btn-github">
-       GitHub
+    <a href="https://github.com/altolas-gh/Trabalho-2-Linguagens-de-Programa-o" class="btn">
+      🐙 GitHub
     </a>
   </div>
 </section>
 
 <!-- KPIs -->
 <section class="section">
-  <h2 class="section-title"> Visão Geral dos Dados</h2>
+  <h2 class="section-title">📈 Visão Geral dos Dados</h2>
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-icon">📊</div>
@@ -223,5 +315,14 @@
   </p>
 </footer>
 
+<script>
+  function toggleTheme() {
+    const root  = document.documentElement;
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeIcon').textContent  = isDark ? '🌙' : '☀️';
+    document.getElementById('themeLabel').textContent = isDark ? 'Modo Escuro' : 'Modo Claro';
+  }
+</script>
 </body>
 </html>
