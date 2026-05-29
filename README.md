@@ -1,10 +1,10 @@
-# 🛡️ CyberSec Brasil — Dashboard de Segurança Cibernética
+# CyberSec Brasil — Dashboard de Segurança Cibernética
 
 **Projeto G2 · Tema 26 — Análise de Segurança Cibernética e Ataques Digitais**
 
 ---
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 Dashboard analítico desenvolvido com **Streamlit** e **Plotly** para investigar padrões de ataques cibernéticos e incidentes de segurança digital no Brasil entre **2015 e 2024**.
 
@@ -18,7 +18,7 @@ O projeto responde às principais perguntas de negócio:
 
 ---
 
-## 🗂️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 projeto-ciberseguranca/
@@ -34,13 +34,13 @@ projeto-ciberseguranca/
 ├── notebooks/
 │   └── analise_ciberseguranca.ipynb
 │
-├── database/                       # SQLite gerado automaticamente
+├── database/                       
 └── imagens/                        # Capturas de tela do dashboard
 ```
 
 ---
 
-## 🚀 Como Executar Localmente
+## Como Executar Localmente
 
 ### 1. Clone o repositório
 ```bash
@@ -67,7 +67,7 @@ streamlit run app.py
 
 ---
 
-## 📊 Funcionalidades
+## Funcionalidades da aplicação
 
 ### KPIs
 | KPI | Descrição |
@@ -80,19 +80,19 @@ streamlit run app.py
 | Região Crítica | Região com maior volume |
 
 ### Visualizações
-- 📈 **Linha temporal** — evolução por tipo de ataque
-- 📊 **Barras** — frequência de ataques e setores
-- 🔥 **Heatmap mensal** — sazonalidade dos incidentes
-- 💠 **Dispersão** — correlação impacto × incidentes
-- 🥧 **Pizza** — distribuição de vulnerabilidades
-- 📋 **Tabela dinâmica** — exploração detalhada
+- **Linha temporal** — evolução por tipo de ataque
+- **Barras** — frequência de ataques e setores
+- **Heatmap mensal** — sazonalidade dos incidentes
+- **Dispersão** — correlação impacto × incidentes
+- **Pizza** — distribuição de vulnerabilidades
+- **Tabela dinâmica** — exploração detalhada
 
 ### Filtros Interativos
 Ano, Mês, Região, Estado (UF), Setor, Tipo de Ataque e Nível de Criticidade
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 | Tecnologia | Uso |
 |------------|-----|
@@ -105,15 +105,15 @@ Ano, Mês, Região, Estado (UF), Setor, Tipo de Ataque e Nível de Criticidade
 
 ---
 
-## 🌐 Links
+## Links
 
-- 🔗 **GitHub:** `https://github.com/seu-usuario/projeto-ciberseguranca`
-- 🌍 **GitHub Pages:** `https://seu-usuario.github.io/projeto-ciberseguranca`
-- 📊 **Streamlit Cloud:** `https://seu-usuario-projeto-ciberseguranca.streamlit.app`
+- **GitHub:** `https://github.com/altolas-gh/Trabalho-2-Linguagens-de-Programa-o`
+- **GitHub Pages:** `https://seu-usuario.github.io/projeto-ciberseguranca`
+- **Streamlit Cloud:** `https://seu-usuario-projeto-ciberseguranca.streamlit.app`
 
 ---
 
-## 📦 Dataset
+## Dataset
 
 **Arquivo:** `dados/simulacao_ciberseguranca_brasil.csv`
 
@@ -136,7 +136,7 @@ Ano, Mês, Região, Estado (UF), Setor, Tipo de Ataque e Nível de Criticidade
 
 ---
 
-## 📝 Conclusões Analíticas
+## Conclusões Analíticas
 
 A análise dos dados revela um crescimento consistente dos ataques cibernéticos no Brasil ao longo da década, com destaque para:
 
