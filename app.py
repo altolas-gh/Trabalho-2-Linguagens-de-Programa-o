@@ -143,6 +143,24 @@ st.markdown(f"""
 
     /* Tabela */
     [data-testid="stDataFrame"] {{ background: {T['insight_bg']}; }}
+
+    /* Tendência nos KPIs */
+    .trend-up   {{ color: #ef4444; font-size: 0.8rem; font-weight: 700; }}
+    .trend-down {{ color: #22c55e; font-size: 0.8rem; font-weight: 700; }}
+    .trend-flat {{ color: #94a3b8; font-size: 0.8rem; }}
+
+    /* Contador de registros */
+    .record-counter {{
+        background: {T['toggle_bg']};
+        border: 1px solid {T['toggle_border']};
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-size: 0.82rem;
+        color: {T['toggle_text']};
+        display: inline-block;
+        margin-bottom: 8px;
+    }}
+    .record-counter b {{ color: {T['card_value']}; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -216,7 +234,17 @@ if df.empty:
     st.warning("⚠️ Nenhum registro encontrado para os filtros selecionados.")
     st.stop()
 
-# ─── KPIs ─────────────────────────────────────────────────────────────────────
+# ─── Contador de registros ────────────────────────────────────────────────────
+total_registros   = len(df_full)
+filtrados         = len(df)
+pct_filtro        = filtrados / total_registros * 100
+st.markdown(
+    f'<div class="record-counter">🗂️ Exibindo <b>{filtrados:,}</b> de <b>{total_registros:,}</b> registros '
+    f'<span style="color:#94a3b8">({pct_filtro:.1f}% do total)</span></div>',
+    unsafe_allow_html=True
+)
+
+# ─── KPIs — com indicador de tendência ───────────────────────────────────────
 total_incidentes = int(df["incidentes"].sum())
 impacto_total    = df["impacto_financeiro"].sum()
 tempo_medio      = df["tempo_recuperacao"].mean()
@@ -224,23 +252,55 @@ ataque_principal = df.groupby("tipo_ataque")["incidentes"].sum().idxmax()
 setor_principal  = df.groupby("setor")["incidentes"].sum().idxmax()
 regiao_critica   = df.groupby("regiao")["incidentes"].sum().idxmax()
 
+# Calcula tendência: compara último ano disponível com o penúltimo
+def calc_trend(serie_col, anos_disponiveis):
+    """Retorna (html_badge, variação_%) comparando último vs penúltimo ano."""
+    anos_ord = sorted(anos_disponiveis)
+    if len(anos_ord) < 2:
+        return '<span class="trend-flat">—</span>', 0.0
+    ult  = df[df["ano"] == anos_ord[-1]][serie_col].sum()
+    pult = df[df["ano"] == anos_ord[-2]][serie_col].sum()
+    if pult == 0:
+        return '<span class="trend-flat">—</span>', 0.0
+    var = (ult - pult) / pult * 100
+    if var > 0:
+        badge = f'<span class="trend-up">▲ {var:.1f}%</span>'
+    elif var < 0:
+        badge = f'<span class="trend-down">▼ {abs(var):.1f}%</span>'
+    else:
+        badge = '<span class="trend-flat">= 0%</span>'
+    return badge, var
+
+trend_inc,  _ = calc_trend("incidentes",        ano_sel)
+trend_imp,  _ = calc_trend("impacto_financeiro", ano_sel)
+trend_rec,  _ = calc_trend("tempo_recuperacao",  ano_sel)
+
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
-def kpi_card(col, icon, label, value, sub=""):
+def kpi_card(col, icon, label, value, trend_badge="", sub=""):
+    trend_html = f'<div style="margin-top:4px">{trend_badge}</div>' if trend_badge else ""
     col.markdown(f"""
     <div class="metric-card">
         <div style="font-size:1.6rem">{icon}</div>
         <div class="metric-value">{value}</div>
         <div class="metric-label">{label}</div>
+        {trend_html}
         {'<div class="metric-sub">' + sub + '</div>' if sub else ''}
     </div>""", unsafe_allow_html=True)
 
-kpi_card(col1, "📊", "Total de Incidentes",   f"{total_incidentes:,}".replace(",", "."))
-kpi_card(col2, "💸", "Impacto Financeiro",    f"R$ {impacto_total/1e9:.2f}B")
-kpi_card(col3, "⏱️", "Tempo Médio Recuperação", f"{tempo_medio:.1f}h")
-kpi_card(col4, "⚔️", "Ataque Predominante",  ataque_principal)
-kpi_card(col5, "🏢", "Setor Mais Afetado",   setor_principal)
-kpi_card(col6, "🗺️", "Região Crítica",        regiao_critica)
+kpi_card(col1, "📊", "Total de Incidentes",      f"{total_incidentes:,}".replace(",", "."), trend_inc)
+kpi_card(col2, "💸", "Impacto Financeiro",       f"R$ {impacto_total/1e9:.2f}B",            trend_imp)
+kpi_card(col3, "⏱️", "Tempo Médio Recuperação", f"{tempo_medio:.1f}h",                      trend_rec)
+kpi_card(col4, "⚔️", "Ataque Predominante",     ataque_principal)
+kpi_card(col5, "🏢", "Setor Mais Afetado",      setor_principal)
+kpi_card(col6, "🗺️", "Região Crítica",          regiao_critica)
+
+anos_legenda = sorted(ano_sel)
+if len(anos_legenda) >= 2:
+    st.caption(
+        f"▲▼ Tendência: variação de {anos_legenda[-1]} em relação a {anos_legenda[-2]}. "
+        "Vermelho = aumento (alerta) · Verde = redução (melhora)."
+    )
 
 st.markdown("<br>", unsafe_allow_html=True)
 
